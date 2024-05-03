@@ -1,0 +1,40 @@
+version: "3"
+services:
+  db:
+    build:
+      context: ./../database
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./../data:/var/lib/postgresql/data
+    ports:
+      - "5438:5432"
+    networks:
+      - common-net
+
+  auth:
+    build:
+      context: ./../../weektwitauth
+      dockerfile: ./Dockerfile
+    ports:
+      - '8081:8081'
+    depends_on:
+      - db
+    networks:
+      - common-net
+
+  port:
+    build:
+      context: ./../../weektwitposts
+      dockerfile: ./Dockerfile
+    ports:
+      - '8082:8082'
+    depends_on:
+      - db
+    networks:
+      - common-net
+
+volumes:
+  db_data:
+
+networks:
+  common-net: {}
